@@ -1,37 +1,57 @@
-setwd('/home/jao/Documentos/PLE/Estatistica/estatistica/atividade-covid')
+---
+title: "Atividade 1 - Dados Pandemia Alagoas"
+output:
+  html_document: default
+---
+# Alunos: Gabriel Luiz Leite Souza e João Victor Falcão Santos Lima
 
+```{r}
 # Lendo dados
 alagoas <- read.csv('pandemia-alagoas.csv')
-View(alagoas)
 
 # Filtrando registros para Marechal Deodoro
 marechal <- subset(alagoas, municipio_residencia == 'Marechal Deodoro')
-View(marechal)
 
 dim(marechal)
+```
 
-# Variavel qualitativa: sexo
+## Item 1
+### Variável qualitativa: sexo
+```{r}
 sexo.tb <- table(marechal$sexo)
+```
 
+### Gráfico de Barras
+```{r}
 #Grafico de Barras
-barplot(sexo.tb, col = c("orange", "cyan"),
+barplot(sexo.tb, col = c("salmon", "cyan"),
         ylab = "Número de pessoas", xlab = "Sexo",
         cex.names = 1.5, cex.lab = 1.25, ylim=c(0,1400),
         main = "Proporção entre sexo masculino e feminino")
 
+
+```
+
+
+### Gráfico de Pizza
+```{r}
 # Grafico de Pizza
 labs <- paste(c("Feminino = ", "Masculino = "),
               100 * round(sexo.tb/length(marechal$sexo), digits = 2),
               "%")
 
 pie(sexo.tb, labels = labs,
-    col = c("orange", "cyan"),
+    col = c("salmon", "cyan"),
     main = "Proporção entre sexo masculino e feminino",
     cex = 1.2)
+```
 
+## Item 2
+### Variável contínua: idade
+```{r}
 # Variavel numerica: Idade
 idade <- na.omit(as.numeric(marechal$idade))
-sort(idade)
+#sort(idade)
 
 # Amplitude de Classe
 amplitude <- max(idade) - min(idade); amplitude
@@ -57,41 +77,46 @@ freqRelAc <- cumsum(freqRel)
 tabResul = cbind(freq, freqAc, freqRel = round(freqRel*100, digits = 2),
                  freqRelAc = round(freqRelAc*100, digits = 2))
 tabResul
+```
 
+### Histograma
+```{r}
 # Histograma
 h = hist(idade, breaks=limites,
          ylab="Frequencias absolutas", 
          main="Histograma",
          xlim=c(4,110), ylim=c(0,570),
-         col="orange")
+         col="salmon")
 text(h$mids, 150, labels=classes, adj=c(0, 0.2), srt=90)
 
 lines(c(min(h$breaks), h$mids, max(h$breaks)), 
       c(0,h$counts, 0), type = "l")
+```
 
-
-# Variaveis qualitativas 
-# situacao = obito vs febre, tosse, cefaleia e dificuldade respiratoria
+## Item 3
+### Variáveis qualitativas
+### situacão = óbito vs febre, tosse, cefaleia e dificuldade respiratória
+```{r}
 obitos <- subset(marechal, situacao_atual == 'Óbito'
                  | situacao_atual == 'Obito')
 
 obitos$tosse[obitos$tosse == ""] <- "N"
 obitos$tosse[obitos$tosse == "X"] <- "S"
-barplot(table(obitos$tosse), col = c("orange", "cyan"),
+barplot(table(obitos$tosse), col = c("salmon", "cyan"),
         ylab = "Número de óbitos", xlab = "Apresentou Tosse",
         cex.names = 1.5, cex.lab = 1.25, ylim=c(0,25),
         main = "Óbitos vs Sintoma de Tosse")
 
 obitos$febre[obitos$febre == ""] <- "N"
 obitos$febre[obitos$febre == "X"] <- "S"
-barplot(table(obitos$febre), col = c("orange", "cyan"),
+barplot(table(obitos$febre), col = c("salmon", "cyan"),
         ylab = "Número de óbitos", xlab = "Apresentou Febre",
         cex.names = 1.5, cex.lab = 1.25, ylim=c(0,20),
         main = "Óbitos vs Sintoma de Febre")
 
 obitos$cefaleia[obitos$cefaleia == ""] <- "N"
 obitos$cefaleia[obitos$cefaleia == "X"] <- "S"
-barplot(table(obitos$cefaleia), col = c("orange", "cyan"),
+barplot(table(obitos$cefaleia), col = c("salmon", "cyan"),
         ylab = "Número de óbitos", xlab = "Apresentou Cefaleia",
         cex.names = 1.5, cex.lab = 1.25, ylim=c(0,30),
         main = "Óbitos vs Sintoma de Cefaleia")
@@ -102,8 +127,11 @@ barplot(table(obitos$dificuldade_respiratoria), col = c("salmon", "cyan"),
         ylab = "Número de óbitos", xlab = "Apresentou Dif. Respiratória",
         cex.names = 1.5, cex.lab = 1.25, ylim=c(0,30),
         main = "Óbitos vs Dificuldade Respiratória")
+```
 
-
+### Item 4
+### Variável qualitativa Sexo e variável quantitativa Idade
+```{r}
 # Boxplot sexo vs idade
 # Classificacao dos quartis
 quantile(marechal$idade, na.rm=TRUE)
@@ -116,8 +144,14 @@ sexo.idade.tb <- table(marechal$sexo, idade.cut)
 sexo.idade.tb
 
 # Boxplot
-boxplot(idade ~ sexo, data = marechal, col = c("orange", "cyan"))
+boxplot(idade ~ sexo, data = marechal,
+        main = "Boxblot Sexo vs Idade",
+        col = c("salmon", "cyan"))
+```
 
+## Item 5
+### Interpretação sobre a idade (item 2)
+#### De acordo com o gráfico Histograma plotado no item 2, pode-se notar a concentração de casos de covid principalmente nas idades entre 18.5 e 62.25 anos, ou seja, uma parcela economicamente ativa da população de Marechal Deodoro e que, possivelmente, esteve mais exposta ao vírus por ter que se deslocar e entrar em contato com mais pessoas para trabalhar.
 
-# Interpretacao - Idade
-
+### Interpretação sobre idade e sexo (item 4)
+#### Como mostrado no item 1, a proporção entre pessoas do sexo feminino é de 55% e masculino 45%, aproximadamente. De acordo com o Boxplot do item 4, a posição dos dados para idade é próxima em ambos os sexos, com a mediana masculina sendo um pouco menor. Quanto à simetria, a mediana feminina posicionada bem ao centro da caixa indica dados simétricos, enquanto a masculina é um pouco inferior, indicando uma leve assimetria positiva dos dados. A dispersão, notada pelo tamanho da caixa, é bem aproximada em ambos os casos, mas a masculina é levemente maior. O limite superior masculino é maior, e o gráfico masculino apresenta outliers mais extremos, indicando casos em idades avançadas. 
